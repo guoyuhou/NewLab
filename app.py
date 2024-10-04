@@ -46,7 +46,6 @@ def show_login_page():
     if st.button("登录"):
         # TODO: 实现真实的用户认证逻辑
         st.session_state.user = {"username": username, "role": "admin"}
-        st.experimental_rerun()
 
 def show_main_app():
     """
@@ -63,7 +62,6 @@ def show_main_app():
         "schedule": schedule_management,
         "visualization": data_visualization,
         "export": data_export,
-        "settings": settings,
     }
     
     # 创建侧边栏导航

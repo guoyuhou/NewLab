@@ -22,12 +22,14 @@
 import sqlite3
 import streamlit as st
 
-def init_connection():
+@st.cache_resource
+def get_connection():
     """
-    初始化并返回一个新的数据库连接
-    
+    获取数据库连接。
+    使用 st.cache_resource 来缓存数据库连接。
+
     返回:
-        sqlite3.Connection: 数据库连接对象
+    sqlite3.Connection: 数据库连接对象
     """
     return sqlite3.connect('lab_management.db', check_same_thread=False)
 
@@ -116,16 +118,6 @@ def init_db():
                   timestamp TIMESTAMP,
                   FOREIGN KEY (user_id) REFERENCES users (id))''')
     conn.commit()
-
-@st.cache(hash_funcs={sqlite3.Connection: id})
-def get_connection():
-    """
-    获取数据库连接（使用Streamlit缓存以提高性能）
-    
-    返回:
-        sqlite3.Connection: 缓存的数据库连接对象
-    """
-    return init_connection()
 
 def get_user(username):
     """
