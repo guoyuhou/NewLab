@@ -25,7 +25,6 @@ def sidebar_menu():
     str: 选中的菜单项对应的值
     """
     with st.sidebar:
-        st.image("logo.png", width=200)
         st.title("实验室管理系统")
         menu_items = {
             "首页": "home",
