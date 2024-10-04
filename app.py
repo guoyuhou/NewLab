@@ -18,7 +18,8 @@ from utils import ui_components
 from pages import home, inventory_management, financial_management, project_management, schedule_management, data_visualization, data_export, settings
 import modules.user_management as user_management
 import xlsxwriter
-
+import atexit
+from utils.database import get_connection
 
 def main():
     """
@@ -78,6 +79,12 @@ def show_main_app():
     # 添加页面底部信息
     st.sidebar.markdown("---")
     st.sidebar.info("© 2023 实验室管理系统 v1.0")
+
+def close_connection():
+    conn = get_connection()
+    conn.close()
+
+atexit.register(close_connection)
 
 if __name__ == "__main__":
     main()
