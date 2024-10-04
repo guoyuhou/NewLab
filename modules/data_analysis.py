@@ -1,15 +1,30 @@
-# modules/data_analysis.py
 """
 数据分析模块
+
+该模块提供了一系列数据分析工具和功能，包括描述性统计、相关性分析、回归分析、
+预测模型、聚类分析等。它还集成了项目管理、库存管理和用户行为分析等功能。
+
+主要功能:
+1. 基础统计分析
+2. 预测分析（支出、库存需求）
+3. 项目成功因素分析
+4. 用户行为聚类分析
+5. 综合洞察生成
+
 设计思路:
 1. 提供各种数据分析工具和算法
-2. 实现数据可视化功能
-3. 支持自定义分析脚本执行
+2. 实现数据可视化功能（待实现）
+3. 支持自定义分析脚本执行（待实现）
 4. 集成机器学习模型训练和预测
-5. 处理大规模数据集和分布式计算
-"""
+5. 处理大规模数据集和分布式计算（待优化）
 
-# modules/data_analysis.py
+依赖:
+- pandas: 数据处理
+- numpy: 数值计算
+- scikit-learn: 机器学习算法
+- 自定义模块: inventory_management, financial_management, project_management, user_management
+- 自定义工具: database
+"""
 
 import pandas as pd
 import numpy as np
@@ -24,12 +39,41 @@ from utils import database
 from datetime import datetime, timedelta
 
 def descriptive_statistics(data):
+    """
+    计算并返回数据的描述性统计信息
+    
+    参数:
+    data (pandas.DataFrame): 输入数据
+
+    返回:
+    pandas.DataFrame: 包含描述性统计信息的DataFrame
+    """
     return data.describe()
 
 def correlation_analysis(data):
+    """
+    计算并返回数据各列之间的相关性
+
+    参数:
+    data (pandas.DataFrame): 输入数据
+
+    返回:
+    pandas.DataFrame: 相关性矩阵
+    """
     return data.corr()
 
 def simple_regression(data, x_column, y_column):
+    """
+    执行简单线性回归分析
+
+    参数:
+    data (pandas.DataFrame): 输入数据
+    x_column (str): 自变量列名
+    y_column (str): 因变量列名
+
+    返回:
+    sklearn.linear_model.LinearRegression: 训练好的线性回归模型
+    """
     X = data[[x_column]]
     y = data[y_column]
     model = LinearRegression()
@@ -37,6 +81,17 @@ def simple_regression(data, x_column, y_column):
     return model
 
 def save_analysis_result(user_id, analysis_type, file_name):
+    """
+    保存分析结果到数据库
+
+    参数:
+    user_id (int): 用户ID
+    analysis_type (str): 分析类型
+    file_name (str): 结果文件名
+
+    返回:
+    bool: 保存成功返回True，否则返回False
+    """
     conn = database.get_connection()
     c = conn.cursor()
     try:
@@ -49,6 +104,15 @@ def save_analysis_result(user_id, analysis_type, file_name):
         return False
 
 def get_analysis_history(user_id):
+    """
+    获取用户的分析历史记录
+
+    参数:
+    user_id (int): 用户ID
+
+    返回:
+    list: 包含分析历史记录的字典列表
+    """
     conn = database.get_connection()
     c = conn.cursor()
     c.execute("SELECT analysis_type, file_name, timestamp FROM analysis_history WHERE user_id = ? ORDER BY timestamp DESC", (user_id,))
@@ -56,6 +120,15 @@ def get_analysis_history(user_id):
     return [{'analysis_type': h[0], 'file_name': h[1], 'timestamp': h[2]} for h in history]
 
 def predict_future_expenses(months_ahead=3):
+    """
+    预测未来几个月的支出
+
+    参数:
+    months_ahead (int): 预测未来的月数，默认为3
+
+    返回:
+    dict: 包含预测结果、模型评估指标和预测日期的字典
+    """
     financial_data = financial_management.get_monthly_trend()
     
     # 准备特征
@@ -88,6 +161,12 @@ def predict_future_expenses(months_ahead=3):
     }
 
 def predict_inventory_needs():
+    """
+    预测未来的库存需求
+
+    返回:
+    dict: 包含每种物品预测需求量和模型评估指标的字典
+    """
     inventory_usage = inventory_management.get_inventory_usage_history()
     
     predictions = {}
@@ -120,6 +199,12 @@ def predict_inventory_needs():
     return predictions
 
 def analyze_project_success_factors():
+    """
+    分析影响项目成功的因素
+
+    返回:
+    dict: 包含模型准确率、分类报告和特征重要性的字典
+    """
     projects = project_management.get_all_projects_with_details()
     
     # 准备特征和目标变量
@@ -160,6 +245,12 @@ def analyze_project_success_factors():
     }
 
 def analyze_user_behavior():
+    """
+    分析用户行为并进行聚类
+
+    返回:
+    dict: 包含用户聚类结果和聚类中心的字典
+    """
     user_activity = user_management.get_user_activity()
     
     # 准备数据
@@ -186,6 +277,12 @@ def analyze_user_behavior():
     }
 
 def generate_insights():
+    """
+    生成综合洞察报告
+
+    返回:
+    list: 包含各种洞察的字符串列表
+    """
     insights = []
 
     # 支出预测洞察

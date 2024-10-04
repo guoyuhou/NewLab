@@ -1,9 +1,16 @@
-# pages/lab_info.py
+"""
+pages/lab_info.py
+
+这个文件包含了实验室信息页面的渲染逻辑。
+它显示实验室的基本信息、成员列表、主要设备和最新发表的论文。
+如果用户是管理员，还提供了编辑实验室信息的功能。
+"""
 
 import streamlit as st
 from modules import lab_management
 
 def render():
+    """渲染实验室信息页面的主函数"""
     st.title("实验室信息")
 
     # 获取实验室基本信息
@@ -51,12 +58,15 @@ def render():
     # 编辑实验室信息的表单
     if st.session_state.get('edit_lab_info', False):
         st.header("编辑实验室信息")
+        # 创建输入字段，用于编辑实验室信息
         new_name = st.text_input("实验室名称", lab_info['name'])
         new_institution = st.text_input("所属机构", lab_info['institution'])
         new_established_date = st.date_input("成立时间", lab_info['established_date'])
         new_research_focus = st.text_area("研究方向", lab_info['research_focus'])
 
+        # 保存更改按钮
         if st.button("保存更改"):
+            # 尝试更新实验室信息
             if lab_management.update_lab_info(new_name, new_institution, new_established_date, new_research_focus):
                 st.success("实验室信息更新成功！")
                 st.session_state.edit_lab_info = False

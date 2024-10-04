@@ -1,9 +1,15 @@
 # pages/chat.py
+"""
+这个文件实现了实验室聊天室的功能。
+它允许用户选择现有聊天室或创建新的聊天室，
+并在选定的聊天室中查看和发送消息。
+"""
 
 import streamlit as st
 from modules import communication
 
 def render():
+    """渲染聊天室页面的主函数"""
     st.title("实验室聊天室")
 
     # 获取所有聊天室
@@ -13,6 +19,7 @@ def render():
     selected_room = st.selectbox("选择聊天室", [room['name'] for room in chat_rooms] + ["创建新聊天室"])
 
     if selected_room == "创建新聊天室":
+        # 创建新聊天室的逻辑
         new_room_name = st.text_input("新聊天室名称")
         if st.button("创建") and new_room_name:
             if communication.create_chat_room(new_room_name, st.session_state.user['id']):
@@ -25,6 +32,7 @@ def render():
         room_id = next(room['id'] for room in chat_rooms if room['name'] == selected_room)
         messages = communication.get_chat_messages(room_id)
 
+        # 遍历并显示聊天消息
         for msg in messages:
             st.text(f"{msg['username']} ({msg['timestamp']}): {msg['content']}")
 
