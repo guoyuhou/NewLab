@@ -49,4 +49,9 @@ async def send_message(user, message):
 
 # 在页面加载时连接到WebSocket服务器
 if "ws_connection" not in st.session_state:
-    st.session_state.ws_connection = asyncio.run(websockets.connect("ws://localhost:8765"))
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        st.session_state.ws_connection = loop.run_until_complete(websockets.connect("ws://localhost:8765"))
+    except Exception as e:
+        st.error(f"无法连接到WebSocket服务器：{str(e)}")
